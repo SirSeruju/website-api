@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Content (
-  getContent, getContentById 
+  getContent, getContentById, postContent
 ) where
 
 import Web.Scotty as Sc
@@ -35,3 +35,5 @@ getContentById id conn = field >>= (\content -> Sc.json content)
         []     -> raiseStatus status204 "No Content"
         (x:xs) -> return x
 
+postContent :: Connection -> Sc.ActionM ()
+postContent conn = undefined
