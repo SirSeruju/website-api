@@ -1,0 +1,84 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           website-api
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/website-api#readme>
+homepage:       https://github.com/githubuser/website-api#readme
+bug-reports:    https://github.com/githubuser/website-api/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2021 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/website-api
+
+library
+  exposed-modules:
+      Content
+  other-modules:
+      Paths_website_api
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson >=1.4.7.1
+    , base >=4.7 && <5
+    , http-types >=0.12.3
+    , scotty >=0.9.1
+    , sqlite-simple >=0.4.18.0
+    , text >=1.2.4.1
+    , wai >=3.0.2.3
+    , wai-extra >=3.0.7
+    , wai-middleware-static >=0.7.0.1
+  default-language: Haskell2010
+
+executable website-api-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_website_api
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson >=1.4.7.1
+    , base >=4.7 && <5
+    , http-types >=0.12.3
+    , scotty >=0.9.1
+    , sqlite-simple >=0.4.18.0
+    , text >=1.2.4.1
+    , wai >=3.0.2.3
+    , wai-extra >=3.0.7
+    , wai-middleware-static >=0.7.0.1
+    , website-api
+  default-language: Haskell2010
+
+test-suite website-api-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_website_api
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson >=1.4.7.1
+    , base >=4.7 && <5
+    , http-types >=0.12.3
+    , scotty >=0.9.1
+    , sqlite-simple >=0.4.18.0
+    , text >=1.2.4.1
+    , wai >=3.0.2.3
+    , wai-extra >=3.0.7
+    , wai-middleware-static >=0.7.0.1
+    , website-api
+  default-language: Haskell2010

@@ -1,0 +1,55 @@
+name:                website-api
+version:             0.1.0.0
+github:              "githubuser/website-api"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2021 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/website-api#readme>
+
+dependencies:
+- base                  >= 4.7 && < 5
+- scotty                >= 0.9.1
+- wai                   >= 3.0.2.3
+- wai-middleware-static >= 0.7.0.1
+- wai-extra             >= 3.0.7
+- sqlite-simple         >= 0.4.18.0
+- text                  >= 1.2.4.1
+- aeson                 >= 1.4.7.1
+- http-types            >= 0.12.3
+library:
+  source-dirs: src
+
+executables:
+  website-api-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - website-api
+
+tests:
+  website-api-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - website-api
