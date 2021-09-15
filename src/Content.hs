@@ -9,6 +9,8 @@ import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import Data.Aeson
 
+import Auth
+
 data ContentField = ContentField Int String String deriving (Show)
 
 instance FromRow ContentField where
@@ -36,4 +38,4 @@ getContentById id conn = field >>= (\content -> Sc.json content)
         (x:xs) -> return x
 
 postContent :: Connection -> Sc.ActionM ()
-postContent conn = undefined
+postContent conn = verify conn

@@ -9,7 +9,6 @@ import Data.Aeson
 import System.Directory
 
 import Content
-import Auth
 import Database as Db
 
 databaseName = "materials.db"
@@ -21,7 +20,7 @@ main = do
   Sc.scotty 3000 $ do
     Sc.get  "/api/content"      $ getContent conn
     Sc.get  "/api/content/:cid" $ param "cid" >>= (\id -> getContentById id conn)
-    -- Sc.post "/api/content" $ postContent conn
+    Sc.post "/api/content"      $ postContent conn
   close conn
 
 checkDatabase :: IO ()
