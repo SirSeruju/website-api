@@ -7,9 +7,11 @@ import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import Data.Aeson
 import System.Directory
+import Network.Wai.Middleware.HttpAuth
 
 import Content
 import Database as Db
+import Auth
 
 databaseName = "materials.db"
 
@@ -18,6 +20,7 @@ main = do
   checkDatabase
   conn <- open databaseName
   Sc.scotty 3000 $ do
+    middleware $ basicAuth (verify conn) authSettings
     Sc.get  "/api/content"      $ getContent conn
     Sc.get  "/api/content/:cid" $ param "cid" >>= (\id -> getContentById id conn)
     Sc.post "/api/content"      $ postContent conn

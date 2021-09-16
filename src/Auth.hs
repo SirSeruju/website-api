@@ -1,34 +1,32 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Auth (verify) where
+module Auth (verify, authSettings) where
 
-import Web.Scotty as Sc
-import Network.HTTP.Types
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
-import Data.Aeson
 import Data.ByteString as Bs
 import Data.ByteString.UTF8 as Bsu
-import Data.Map as M
 import Crypto.BCrypt
+import Network.Wai (Request, pathInfo, requestMethod)
+import Network.Wai.Middleware.HttpAuth
 
 data User = User Int String String deriving (Show)
 instance FromRow User where
   fromRow = User <$> field <*> field <*> field
 
-verify :: Connection -> Sc.ActionM ()
-verify conn = do
-  body <- Sc.jsonData :: Sc.ActionM (M.Map String String)
-  case (,) <$> (M.lookup "user" body) <*> (M.lookup "password" body) of
-    Just (user, password) -> verifyCredentials user password conn
-    _                     -> raiseStatus status401 "Unauthorized"
-
-verifyCredentials :: String -> String -> Connection -> Sc.ActionM ()
-verifyCredentials user password conn = do
-  pwd <- Sc.liftAndCatchIO $ queryNamed conn "SELECT * FROM users WHERE user = :user;" [":user" := user] :: Sc.ActionM [User]
+verify :: Connection -> Bs.ByteString -> Bs.ByteString -> IO Bool
+verify conn user password = do
+  pwd <- queryNamed conn "SELECT * FROM users WHERE user = :user;" [":user" := Bsu.toString user] :: IO [User]
   case pwd of
-    ((User id _ passHash):[]) ->
-      if   validatePassword (Bsu.fromString passHash) (Bsu.fromString password)
-      then Sc.json id
-      else raiseStatus status401 "Unauthorized"
-    _                         -> raiseStatus status401 "Unauthorized"
+    ((User _ _ passHash):[]) -> return $ validatePassword (Bsu.fromString passHash) password
+    _                        -> return False
+
+
+authSettings :: AuthSettings
+authSettings = "My Realm" { authIsProtected = needsAuth }
+
+needsAuth :: Request -> IO Bool
+needsAuth req = do
+  case (pathInfo req, show $ requestMethod req) of
+    ("api":_, "POST") -> return True
+    _                 -> return False

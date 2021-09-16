@@ -44,6 +44,8 @@ library
     , sqlite-simple >=0.4.18.0
     , text >=1.2.4.1
     , utf8-string >=1.0.2
+    , wai >=3.2.3
+    , wai-extra >=3.1.6
   default-language: Haskell2010
 
 executable website-api-exe
@@ -65,6 +67,8 @@ executable website-api-exe
     , sqlite-simple >=0.4.18.0
     , text >=1.2.4.1
     , utf8-string >=1.0.2
+    , wai >=3.2.3
+    , wai-extra >=3.1.6
     , website-api
   default-language: Haskell2010
 
@@ -88,5 +92,7 @@ test-suite website-api-test
     , sqlite-simple >=0.4.18.0
     , text >=1.2.4.1
     , utf8-string >=1.0.2
+    , wai >=3.2.3
+    , wai-extra >=3.1.6
     , website-api
   default-language: Haskell2010
