@@ -1,34 +1,26 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Web.Scotty as Sc
+import Web.Scotty
+import Data.Aeson (object, (.=))
+import Control.Monad.IO.Class (liftIO)
 import Network.HTTP.Types
-import Database.SQLite.Simple
-import Database.SQLite.Simple.FromRow
-import Data.Aeson
 import System.Directory
 import Network.Wai.Middleware.HttpAuth
 
-import Content
-import Database as Db
 import Auth
-
-databaseName = "materials.db"
+import Model
 
 main :: IO ()
 main = do
-  checkDatabase
-  conn <- open databaseName
-  Sc.scotty 3000 $ do
-    middleware $ basicAuth (verify conn) authSettings
-    Sc.get  "/api/content"      $ getContent conn
-    Sc.get  "/api/content/:cid" $ param "cid" >>= (\id -> getContentById id conn)
-    Sc.post "/api/content"      $ postContent conn
-  close conn
+  doMigration
+  scotty 3000 $ do
+    get  "/api/post"      $ getPostsA
+    --middleware $ basicAuth (verify) authSettings
+    --Sc.get  "/api/content/:cid" $ param "cid" >>= (\id -> getContentById id conn)
+    --Sc.post "/api/content"      $ postContent conn
 
-checkDatabase :: IO ()
-checkDatabase = do
-  doesExist <- doesFileExist databaseName
-  case doesExist of
-    True -> return ()
-    False -> Db.create
+getPostsA :: ActionM ()
+getPostsA = do
+    ens <- liftIO getPosts
+    json $ object ["posts" .= ens]

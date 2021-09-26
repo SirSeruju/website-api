@@ -26,8 +26,7 @@ source-repository head
 library
   exposed-modules:
       Auth
-      Content
-      Database
+      Model
   other-modules:
       Paths_website_api
   hs-source-dirs:
@@ -40,10 +39,11 @@ library
     , containers >=0.6.5.1
     , directory >=1.3.6.0
     , http-types >=0.12.3
+    , monad-logger >=0.3.36
+    , persistent >=2.13.1.2
+    , persistent-sqlite >=2.13.0.3
     , scotty >=0.9.1
-    , sqlite-simple >=0.4.18.0
     , text >=1.2.4.1
-    , utf8-string >=1.0.2
     , wai >=3.2.3
     , wai-extra >=3.1.6
   default-language: Haskell2010
@@ -63,10 +63,11 @@ executable website-api-exe
     , containers >=0.6.5.1
     , directory >=1.3.6.0
     , http-types >=0.12.3
+    , monad-logger >=0.3.36
+    , persistent >=2.13.1.2
+    , persistent-sqlite >=2.13.0.3
     , scotty >=0.9.1
-    , sqlite-simple >=0.4.18.0
     , text >=1.2.4.1
-    , utf8-string >=1.0.2
     , wai >=3.2.3
     , wai-extra >=3.1.6
     , website-api
@@ -88,10 +89,11 @@ test-suite website-api-test
     , containers >=0.6.5.1
     , directory >=1.3.6.0
     , http-types >=0.12.3
+    , monad-logger >=0.3.36
+    , persistent >=2.13.1.2
+    , persistent-sqlite >=2.13.0.3
     , scotty >=0.9.1
-    , sqlite-simple >=0.4.18.0
     , text >=1.2.4.1
-    , utf8-string >=1.0.2
     , wai >=3.2.3
     , wai-extra >=3.1.6
     , website-api
