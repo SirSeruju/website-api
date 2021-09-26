@@ -12,7 +12,7 @@
 {-# LANGUAGE DataKinds                  #-}
 
 module Model
-  ( doMigration, getPosts )
+  ( doMigration, getPosts, getPostById)
 where
 
 import Database.Persist
@@ -47,3 +47,10 @@ doMigration = runDb (runMigration migrateAll)
 
 getPosts :: IO [Entity Post]
 getPosts = runDb $ selectList ([] :: [Filter Post]) []
+
+getPostById :: Integer -> IO (Maybe (Entity Post))
+getPostById index = runDb $ do
+  posts <- selectList [PostId ==. (toSqlKey . fromIntegral $ index)] []
+  case posts of
+    (p:_) -> return . Just $ p 
+    []    -> return Nothing
