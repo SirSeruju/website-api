@@ -22,5 +22,5 @@ main = do
 
 getPostsA :: ActionM ()
 getPostsA = do
-    ens <- liftIO getPosts
-    json $ object ["posts" .= ens]
+  posts <- liftIO getPosts
+  json $ object ["posts" .= posts]
