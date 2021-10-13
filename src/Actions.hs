@@ -10,21 +10,28 @@ where
   
 
 import Web.Scotty
-import Data.Aeson (object, (.=), Value (Null, Number), fromJSON, toJSON, Result(..))
-import Control.Monad.IO.Class (liftIO)
-import Network.HTTP.Types
-import System.Directory
-import Network.Wai.Middleware.HttpAuth
-import Network.Wai
+  ( ActionM
+  , raiseStatus
+  , request
+  , liftAndCatchIO
+  , json
+  , jsonData )
+import Data.Aeson
+  ( object
+  , (.=)
+  , Value (Number)
+  , fromJSON
+  , toJSON
+  , Result(..))
+import Network.HTTP.Types (hAuthorization, unauthorized401)
+import Network.Wai.Middleware.HttpAuth (extractBasicAuth)
+import Network.Wai (requestHeaders)
 import Network.HTTP.Types.Status (noContent204)
-import Data.ByteString
-import GHC.Int
-import Data.HashMap.Strict
-import Data.Text
-import Control.Exception
+import GHC.Int (Int64)
+import Data.HashMap.Strict (HashMap, insert)
+import Data.Text (Text)
 import Data.Functor ((<&>))
 
-import Auth
 import Model
 
 getPostsA :: ActionM ()
@@ -52,8 +59,9 @@ loginA = do
   req <- request
   case Prelude.lookup hAuthorization (requestHeaders req) >>= extractBasicAuth of
     Just (username, password) -> do
-      username <- liftAndCatchIO . validateUser $ User username password
-      maybe unauthorizedA return username
+      validUsername <- liftAndCatchIO . validateUser $ User username password
+      maybe unauthorizedA return validUsername
+    Nothing -> unauthorizedA
 
 noContentA :: ActionM a
 noContentA = raiseStatus noContent204 "No content."
