@@ -76,7 +76,8 @@ selectPosts :: IO [Entity Post]
 selectPosts = runDb $ selectList ([] :: [Filter Post]) []
 
 selectPostById :: Integer -> IO (Maybe (Entity Post))
-selectPostById index = runDb $ selectFirst [PostId ==. (toSqlKey . fromIntegral $ index)] []
+selectPostById index = runDb $
+  selectFirst [PostId ==. (toSqlKey . fromIntegral $ index)] []
 
 validateUser :: User -> IO (Maybe Int64)
 validateUser (User username password) = do

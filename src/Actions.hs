@@ -47,8 +47,10 @@ getPostByIdA index = do
 postPostA :: ActionM ()
 postPostA = do
   userId <- loginA
-  post <- (jsonData :: ActionM (HashMap Text Value)) <&> insert "user" (Number . fromIntegral $ userId)
-  liftAndCatchIO ((catchResult . fromJSON . toJSON $ post) >>= insertPost) >>= json
+  post <- (jsonData :: ActionM (HashMap Text Value))
+    <&> insert "user" (Number . fromIntegral $ userId)
+  liftAndCatchIO ((catchResult . fromJSON . toJSON $ post) >>= insertPost)
+    >>= json
   where
     catchResult :: Result a -> IO a
     catchResult (Error err) = error err
@@ -57,7 +59,7 @@ postPostA = do
 loginA :: ActionM Int64
 loginA = do
   req <- request
-  case Prelude.lookup hAuthorization (requestHeaders req) >>= extractBasicAuth of
+  case lookup hAuthorization (requestHeaders req) >>= extractBasicAuth of
     Just (username, password) -> do
       validUsername <- liftAndCatchIO . validateUser $ User username password
       maybe unauthorizedA return validUsername
