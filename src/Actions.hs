@@ -23,7 +23,10 @@ import Data.Aeson
   , fromJSON
   , toJSON
   , Result(..))
-import Network.HTTP.Types (hAuthorization, unauthorized401)
+import Network.HTTP.Types
+  ( hAuthorization
+  , unauthorized401
+  , methodNotAllowed405 )
 import Network.Wai.Middleware.HttpAuth (extractBasicAuth)
 import Network.Wai (requestHeaders)
 import Network.HTTP.Types.Status (noContent204)
@@ -62,11 +65,14 @@ loginA = do
   case lookup hAuthorization (requestHeaders req) >>= extractBasicAuth of
     Just (username, password) -> do
       validUsername <- liftAndCatchIO . validateUser $ User username password
-      maybe unauthorizedA return validUsername
+      maybe methodNotAllowedA return validUsername
     Nothing -> unauthorizedA
 
 noContentA :: ActionM a
 noContentA = raiseStatus noContent204 "No content."
+
+methodNotAllowedA :: ActionM a
+methodNotAllowedA = raiseStatus methodNotAllowed405 "Method not allowed."
 
 unauthorizedA :: ActionM a
 unauthorizedA = raiseStatus unauthorized401 "Basic Authorization needed."
