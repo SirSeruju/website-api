@@ -16,6 +16,7 @@ module Model
   , selectPosts
   , selectPostById
   , insertPost
+  , deletePostById
   , validateUser
   , Post(..)
   , User(..) )
@@ -33,6 +34,7 @@ import Database.Persist.Sqlite
   , Filter
   , Key
   , insert
+  , deleteWhere
   , entityVal
   , entityKey
   , toSqlKey
@@ -91,3 +93,7 @@ validateUser (User username password) = do
 
 insertPost :: Post -> IO (Key Post)
 insertPost = runDb . insert
+
+deletePostById :: Integer -> IO ()
+deletePostById index = runDb $
+  deleteWhere [PostId ==. (toSqlKey . fromIntegral $ index)]

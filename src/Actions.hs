@@ -3,6 +3,7 @@ module Actions
   ( getPostsA
   , getPostByIdA
   , postPostA
+  , deletePostByIdA
   , loginA
   , noContentA
   , unauthorizedA )
@@ -34,6 +35,7 @@ import GHC.Int (Int64)
 import Data.HashMap.Strict (HashMap, insert)
 import Data.Text (Text)
 import Data.Functor ((<&>))
+import Database.Persist.Sqlite (entityVal, fromSqlKey)
 
 import Model
 
@@ -46,6 +48,17 @@ getPostByIdA :: Integer -> ActionM ()
 getPostByIdA index = do
   post <- liftAndCatchIO $ selectPostById index
   maybe noContentA json post
+
+deletePostByIdA :: Integer -> ActionM ()
+deletePostByIdA index = do
+  userId <- loginA
+  post   <- liftAndCatchIO $ selectPostById index
+  case post of
+    Nothing -> noContentA
+    Just p  ->
+      if   (fromSqlKey . postUser. entityVal $ p) == userId
+      then liftAndCatchIO $ deletePostById index
+      else methodNotAllowedA
 
 postPostA :: ActionM ()
 postPostA = do

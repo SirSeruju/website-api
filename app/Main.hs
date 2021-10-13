@@ -6,12 +6,13 @@ import Web.Scotty
   , Options (Options, verbose, settings)
   , param
   , get
-  , post )
+  , post
+  , delete )
 import Network.Wai.Handler.Warp (defaultSettings, setPort)
 import Data.String (fromString)
 
 import Model
-import Actions (getPostsA, getPostByIdA, postPostA)
+import Actions (getPostsA, getPostByIdA, postPostA, deletePostByIdA)
 import qualified Config (port, apiPrefix, verbose)
 
 options :: IO Options
@@ -29,8 +30,9 @@ main = do
   prefix <- Config.apiPrefix
   opts <- options
   scottyOpts opts $ do
-    get  (fromString (prefix ++ "post"))        getPostsA
-    get  (fromString (prefix ++ "post/:pid")) $ param "pid" >>= getPostByIdA
-    post (fromString (prefix ++ "post"))        postPostA
+    get    (fromString (prefix ++ "post"))        getPostsA
+    get    (fromString (prefix ++ "post/:i")) $ param "i" >>= getPostByIdA
+    post   (fromString (prefix ++ "post"))        postPostA
+    delete (fromString (prefix ++ "post/:i")) $ param "i" >>= deletePostByIdA
     --middleware $ basicAuth (verify) authSettings
     --Sc.post "/api/content"      $ postContent conn
