@@ -1,0 +1,8 @@
+database {
+  filename = "Database.db"
+}
+server {
+  port = 8080
+  api_prefix = "/api/"
+  verbose = 0
+}

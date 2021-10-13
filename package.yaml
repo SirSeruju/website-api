@@ -34,7 +34,9 @@ dependencies:
 - persistent            >= 2.13.1.2
 - persistent-sqlite     >= 2.13.0.3
 - monad-logger          >= 0.3.36
--  unordered-containers  >= 0.2.14.0
+- unordered-containers  >= 0.2.14.0
+- configurator          >= 0.3.0.0
+- warp                  >= 3.3.17
 
 library:
   source-dirs: src
