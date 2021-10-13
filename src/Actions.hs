@@ -53,7 +53,7 @@ postPostA = do
   post <- (jsonData :: ActionM (HashMap Text Value))
     <&> insert "user" (Number . fromIntegral $ userId)
   liftAndCatchIO ((catchResult . fromJSON . toJSON $ post) >>= insertPost)
-    >>= json
+    >>= (\i -> json $ object ["id" .= i])
   where
     catchResult :: Result a -> IO a
     catchResult (Error err) = error err
