@@ -29,8 +29,8 @@ main = do
   prefix <- Config.apiPrefix
   opts <- options
   scottyOpts opts $ do
-    get  (fromString (prefix ++ "post"))      $ getPostsA
+    get  (fromString (prefix ++ "post"))        getPostsA
     get  (fromString (prefix ++ "post/:pid")) $ param "pid" >>= getPostByIdA
-    post (fromString (prefix ++ "post"))      $ postPostA
+    post (fromString (prefix ++ "post"))        postPostA
     --middleware $ basicAuth (verify) authSettings
     --Sc.post "/api/content"      $ postContent conn

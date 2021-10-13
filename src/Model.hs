@@ -81,11 +81,11 @@ selectPostById index = runDb $ selectFirst [PostId ==. (toSqlKey . fromIntegral 
 validateUser :: User -> IO (Maybe Int64)
 validateUser (User username password) = do
   user <- runDb $ selectFirst [UserUsername ==. username] []
-  return $ (entityVal <$> user) >>= validateP >> (fromSqlKey . entityKey <$> user)
+  return $ user >>= validateP . entityVal >> (fromSqlKey . entityKey <$> user)
   where
     validateP (User _ passHash) =
       if validatePassword passHash password
-      then Just $ username
+      then Just username
       else Nothing
 
 insertPost :: Post -> IO (Key Post)
