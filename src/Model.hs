@@ -21,15 +21,33 @@ module Model
   , User(..) )
 where
 
-import Database.Persist
 import Database.Persist.TH
+  ( persistLowerCase
+  , share
+  , mkPersist
+  , mkMigrate
+  , sqlSettings )
 import Database.Persist.Sqlite
-import Database.Persist.Class
-import Crypto.BCrypt
-import Data.ByteString
+  ( SqlPersistM
+  , Entity
+  , Filter
+  , Key
+  , insert
+  , entityVal
+  , entityKey
+  , toSqlKey
+  , selectFirst
+  , selectList
+  , fromSqlKey
+  , withSqlitePool
+  , runSqlPersistMPool
+  , runMigration
+  , (==.))
+import Crypto.BCrypt          (validatePassword)
+import Data.ByteString        (ByteString)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Logger   (runStderrLoggingT)
-import GHC.Int
+import GHC.Int                (Int64)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Post json
@@ -65,7 +83,7 @@ validateUser (User username password) = do
   user <- runDb $ selectFirst [UserUsername ==. username] []
   return $ (entityVal <$> user) >>= validateP >> (fromSqlKey . entityKey <$> user)
   where
-    validateP user@(User _ passHash) =
+    validateP (User _ passHash) =
       if validatePassword passHash password
       then Just $ username
       else Nothing
