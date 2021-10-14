@@ -27,6 +27,7 @@ import Data.Aeson
 import Network.HTTP.Types
   ( hAuthorization
   , unauthorized401
+  , notFound404
   , methodNotAllowed405 )
 import Network.Wai.Middleware.HttpAuth (extractBasicAuth)
 import Network.Wai (requestHeaders)
@@ -54,7 +55,7 @@ deletePostByIdA index = do
   userId <- loginA
   post   <- liftAndCatchIO $ selectPostById index
   case post of
-    Nothing -> noContentA
+    Nothing -> notFoundA
     Just p  ->
       if   (fromSqlKey . postUser. entityVal $ p) == userId
       then liftAndCatchIO $ deletePostById index
@@ -86,6 +87,9 @@ noContentA = raiseStatus noContent204 "No content."
 
 methodNotAllowedA :: ActionM a
 methodNotAllowedA = raiseStatus methodNotAllowed405 "Method not allowed."
+
+notFoundA :: ActionM a
+notFoundA = raiseStatus notFound404 "Not found."
 
 unauthorizedA :: ActionM a
 unauthorizedA = raiseStatus unauthorized401 "Basic Authorization needed."
